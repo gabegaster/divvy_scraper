@@ -1,5 +1,5 @@
 from scraper.models import Hit, Station
-import urllib, json, time
+import urllib, json, time, os
 from dateutil.parser import parse
 
 DIVVY_URL = "http://divvybikes.com/stations/json"
@@ -19,7 +19,7 @@ def log_me():
     f = open(os.path.join(os.getenv("HOME"),"divvy_query_log.txt"),"a")
     f.write("query made : %s"%time.ctime())
     f.close()
-    print "  execution time ",t
+    print "  execution time ",time.ctime()
 
 def make_station(obj, hit):
     s = Station(hit=hit)
