@@ -1,0 +1,44 @@
+from scraper.models import Hit, Station
+import urllib, json, time
+from dateutil.parser import parse
+
+DIVVY_URL = "http://divvybikes.com/stations/json"
+
+def query():
+    raw_str = urllib.urlopen(DIVVY_URL).read()
+    data = json.loads(raw_str)
+    t = parse(data['executionTime'])
+    print "  execution time ",t
+    hit = Hit(execution_time=t)
+    hit.save()
+    for station_json in data['stationBeanList']:
+        station = make_station(station_json, hit)
+        station.save()
+
+def make_station(obj, hit):
+    s = Station(hit=hit)
+    s.available_bikes = obj['availableBikes']
+    s.available_docks = obj['availableDocks']
+    s.city = obj['city']
+    s.bean_id = obj['id']
+    s.landmark = obj['landMark']
+    s.location = obj['location']
+    s.longitude = obj['longitude']
+    s.stAddress = obj['stAddress1']
+    s.station_name = obj['stationName']
+    s.status_key = obj['statusKey']
+    s.status_value = obj['statusValue']
+    s.test_station = obj['testStation']
+    s.total_docks = obj['totalDocks']
+    return s
+
+def main():
+    c = 0
+    while(True):
+        print "querying url : ",c
+        query()
+        c += 1
+        time.sleep(300)
+
+if __name__ == "__main__":
+    main()
