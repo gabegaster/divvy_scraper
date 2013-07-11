@@ -1,0 +1,6 @@
+*.py[cod]
+*~
+
+# Packages
+bin
+var
